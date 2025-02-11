@@ -4,8 +4,8 @@ interface GenericModalProps {
     title: string;
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (e: React.FormEvent) => void;
-    submitLabel: string;
+    onSubmit?: (e: React.FormEvent) => void;  // 🔥 Ahora es opcional
+    submitLabel?: string;                     // 🔥 Ahora es opcional
     children: React.ReactNode;
 }
 
@@ -31,12 +31,16 @@ const GenericModal: React.FC<GenericModalProps> = ({ title, isOpen, onClose, onS
                         >
                             Cancelar
                         </button>
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        >
-                            {submitLabel}
-                        </button>
+
+                        {/* 🔥 Solo mostrar el botón si se proporciona onSubmit y submitLabel */}
+                        {onSubmit && submitLabel && (
+                            <button
+                                type="submit"
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                            >
+                                {submitLabel}
+                            </button>
+                        )}
                     </div>
                 </form>
             </div>

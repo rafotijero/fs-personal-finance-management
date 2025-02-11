@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Banks from "./pages/banks/Banks.tsx";
 import { useAuth } from "./context/AuthContext";
 import {ToastContainer} from "react-toastify";
+import BankAccounts from "./pages/bankAccounts/BankAccounts.tsx";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { token } = useAuth();
@@ -37,6 +38,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Banks />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/accounts"
+                    element={
+                        <ProtectedRoute>
+                            <BankAccounts />
                         </ProtectedRoute>
                     }
                 />
