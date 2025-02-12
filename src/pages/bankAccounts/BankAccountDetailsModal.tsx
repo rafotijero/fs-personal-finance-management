@@ -15,6 +15,11 @@ const BankAccountDetailsModal: React.FC<BankAccountDetailsModalProps> = ({ isOpe
         <GenericModal title="Detalles de la Cuenta Bancaria" isOpen={isOpen} onClose={onClose}>
             <div className="p-4 bg-white rounded-lg shadow">
                 <div className="mb-4">
+                    <h3 className="text-lg font-bold">Descripción de la Cuenta</h3>
+                    <p className="text-gray-700">{bankAccount.accountDescription}</p>
+                </div>
+
+                <div className="mb-4">
                     <h3 className="text-lg font-bold">Número de Cuenta</h3>
                     <p className="text-gray-700">{bankAccount.accountNumber}</p>
                 </div>

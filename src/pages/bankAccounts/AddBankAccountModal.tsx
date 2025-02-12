@@ -13,6 +13,7 @@ interface AddBankAccountModalProps {
 
 const AddBankAccountModal: React.FC<AddBankAccountModalProps> = ({ isOpen, onClose, onAdd }) => {
     const [formData, setFormData] = useState({
+        accountDescription: "",
         accountNumber: "",
         balance: "",
         accountType: "SAVINGS",
@@ -65,6 +66,7 @@ const AddBankAccountModal: React.FC<AddBankAccountModalProps> = ({ isOpen, onClo
 
         try {
             await createBankAccount({
+                accountDescription: formData.accountDescription,
                 accountNumber: formData.accountNumber,
                 balance: parseFloat(formData.balance),
                 accountType: formData.accountType as "SAVINGS" | "CHECKING",
@@ -75,7 +77,7 @@ const AddBankAccountModal: React.FC<AddBankAccountModalProps> = ({ isOpen, onClo
             toast.success("✅ Cuenta bancaria creada correctamente.");
             onAdd(); // 🔄 Actualiza la lista de cuentas
             onClose();
-            setFormData({ accountNumber: "", balance: "", accountType: "SAVINGS", bankId: "", ownerId: "" });
+            setFormData({ accountDescription:"", accountNumber: "", balance: "", accountType: "SAVINGS", bankId: "", ownerId: "" });
         } catch (error: any) {
             console.error("❌ Error al crear la cuenta bancaria:", error);
             toast.error(`⚠️ No se pudo crear la cuenta: ${error.response?.data?.message || error.message}`);

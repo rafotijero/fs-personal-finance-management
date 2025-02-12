@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import GenericModal from "../common/GenericModal";
 import axios from "../../api/axiosConfig";
 import { TransactionDTO } from "../../types";
+import FileUpload from "../../components/FileUpload"; // ✅ Importamos el componente de subida de archivos
 
 interface EditTransactionModalProps {
     isOpen: boolean;
@@ -19,6 +20,7 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
         amount: "",
         transactionDate: "",
         description: "",
+        receiptFilePath: "", // ✅ Guardar la URL del archivo adjunto
     });
 
     const [bankAccounts, setBankAccounts] = useState<{ id: number; accountNumber: string }[]>([]);
@@ -37,6 +39,7 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
                 amount: transaction.amount.toString(),
                 transactionDate: transaction.transactionDate,
                 description: transaction.description || "",
+                receiptFilePath: transaction.receiptFilePath || "", // ✅ Cargar la ruta del archivo adjunto
             });
         }
     }, [transaction]);
@@ -52,6 +55,12 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    // ✅ Manejar la URL del archivo subido (imagen o PDF)
+    const handleFileUploadSuccess = (fileUrl: string) => {
+        setFormData({ ...formData, receiptFilePath: fileUrl });
+        toast.success("✅ Archivo actualizado correctamente.");
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -70,6 +79,7 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
                     amount: parseFloat(formData.amount),
                     transactionDate: new Date(formData.transactionDate).toISOString(),
                     description: formData.description || undefined,
+                    receiptFilePath: formData.receiptFilePath, // ✅ Se envía la URL del archivo al backend
                 });
 
                 toast.success("✅ Transacción actualizada correctamente.");
@@ -86,7 +96,13 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
         <GenericModal title="Editar Transacción" isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} submitLabel="Guardar Cambios">
             <div className="mb-4">
                 <label className="block text-gray-700">Cuenta Bancaria</label>
-                <select name="bankAccountId" value={formData.bankAccountId} onChange={handleChange} className="w-full border rounded px-3 py-2" required>
+                <select
+                    name="bankAccountId"
+                    value={formData.bankAccountId}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                >
                     {bankAccounts.map((account) => (
                         <option key={account.id} value={account.id}>
                             {account.accountNumber}
@@ -97,7 +113,12 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
 
             <div className="mb-4">
                 <label className="block text-gray-700">Tipo de Transacción</label>
-                <select name="transactionType" value={formData.transactionType} onChange={handleChange} className="w-full border rounded px-3 py-2">
+                <select
+                    name="transactionType"
+                    value={formData.transactionType}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                >
                     <option value="INCOME">Ingreso</option>
                     <option value="EXPENSE">Egreso</option>
                 </select>
@@ -105,17 +126,58 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
 
             <div className="mb-4">
                 <label className="block text-gray-700">Monto</label>
-                <input type="number" name="amount" value={formData.amount} onChange={handleChange} className="w-full border rounded px-3 py-2" required />
+                <input
+                    type="number"
+                    name="amount"
+                    value={formData.amount}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                />
             </div>
 
             <div className="mb-4">
                 <label className="block text-gray-700">Fecha</label>
-                <input type="date" name="transactionDate" value={formData.transactionDate} onChange={handleChange} className="w-full border rounded px-3 py-2" required />
+                <input
+                    type="date"
+                    name="transactionDate"
+                    value={formData.transactionDate}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                />
             </div>
 
             <div className="mb-4">
                 <label className="block text-gray-700">Descripción (Opcional)</label>
-                <input type="text" name="description" value={formData.description} onChange={handleChange} className="w-full border rounded px-3 py-2" />
+                <input
+                    type="text"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                />
+            </div>
+
+            {/* ✅ Subida de archivo adjunto */}
+            <div className="mb-4">
+                <label className="block text-gray-700">Archivo adjunto (Opcional)</label>
+                <FileUpload uploadUrl="/uploads" onUploadSuccess={handleFileUploadSuccess} fileMode="both" />
+
+                {/* ✅ Mostrar archivo actual si existe */}
+                {formData.receiptFilePath && (
+                    <div className="mt-2">
+                        <label className="block text-gray-700">Archivo actual:</label>
+                        <a
+                            href={`${import.meta.env.VITE_API_URL}${formData.receiptFilePath}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                        >
+                            Ver archivo
+                        </a>
+                    </div>
+                )}
             </div>
         </GenericModal>
     );

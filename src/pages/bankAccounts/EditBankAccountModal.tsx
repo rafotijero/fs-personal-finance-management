@@ -15,6 +15,7 @@ interface EditBankAccountModalProps {
 
 const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onClose, bankAccount, onUpdate }) => {
     const [formData, setFormData] = useState({
+        accountDescription: "",
         accountNumber: "",
         balance: "",
         accountType: "SAVINGS",
@@ -56,6 +57,7 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
     useEffect(() => {
         if (bankAccount) {
             setFormData({
+                accountDescription: bankAccount.accountDescription,
                 accountNumber: bankAccount.accountNumber,
                 balance: bankAccount.balance.toString(),
                 accountType: bankAccount.accountType,
@@ -82,6 +84,7 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
         try {
             if (bankAccount) {
                 await updateBankAccount(bankAccount.id, {
+                    accountDescription: formData.accountDescription,
                     accountNumber: formData.accountNumber,
                     balance: parseFloat(formData.balance),
                     accountType: formData.accountType as "SAVINGS" | "CHECKING",

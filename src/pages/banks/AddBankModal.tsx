@@ -61,7 +61,7 @@ const AddBankModal: React.FC<AddBankModalProps> = ({ isOpen, onClose, onAdd }) =
             {/* ✅ Componente FileUpload para subir el logo */}
             <div className="mb-4">
                 <label className="block text-gray-700">Logo</label>
-                <FileUpload uploadUrl="/api/v1/uploads/images" onUploadSuccess={handleLogoUploadSuccess} fileType="image" />
+                <FileUpload uploadUrl="/uploads" onUploadSuccess={handleLogoUploadSuccess} fileMode="image" />
                 {formData.logo && (
                     <img
                         src={`${import.meta.env.VITE_API_URL}${formData.logo}`}

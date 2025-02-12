@@ -8,6 +8,7 @@ export interface Bank {
 
 export interface BankAccount {
     id: number;
+    accountDescription: string;
     accountNumber: string;
     balance: number;
     accountType: "SAVINGS" | "CHECKING";

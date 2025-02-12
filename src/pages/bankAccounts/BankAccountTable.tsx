@@ -24,6 +24,7 @@ const BankAccountsTable: React.FC<BankAccountsTableProps> = ({ bankAccounts, onE
             <table className="table-auto w-full border-collapse border">
                 <thead>
                 <tr className="bg-gray-200">
+                    <th className="border px-4 py-2">Descripción de Cuenta</th>
                     <th className="border px-4 py-2">Número de Cuenta</th>
                     <th className="border px-4 py-2">Saldo</th>
                     <th className="border px-4 py-2">Tipo de Cuenta</th>
@@ -35,6 +36,7 @@ const BankAccountsTable: React.FC<BankAccountsTableProps> = ({ bankAccounts, onE
                 <tbody>
                 {bankAccounts.map((account) => (
                     <tr key={account.id} className="text-center">
+                        <td className="border px-4 py-2">{account.accountDescription}</td>
                         <td className="border px-4 py-2">{account.accountNumber}</td>
                         <td className="border px-4 py-2 text-green-600 font-semibold">${account.balance.toFixed(2)}</td>
                         <td className="border px-4 py-2">

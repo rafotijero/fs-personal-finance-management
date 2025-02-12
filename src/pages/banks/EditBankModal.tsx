@@ -69,7 +69,7 @@ const EditBankModal: React.FC<EditBankModalProps> = ({ isOpen, onClose, bank, on
             {/* 🔥 Sección para la imagen del banco */}
             <div className="mb-4">
                 <label className="block text-gray-700">Logo</label>
-                <FileUpload uploadUrl="/api/v1/uploads/images" onUploadSuccess={handleLogoUploadSuccess} fileType="image" />
+                <FileUpload uploadUrl="/uploads" onUploadSuccess={handleLogoUploadSuccess} fileMode="image" />
 
                 {/* ✅ Mostrar la imagen actual si existe */}
                 {formData.logo && (

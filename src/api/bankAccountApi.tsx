@@ -27,6 +27,7 @@ export const fetchBankAccountById = async (id: number): Promise<BankAccount> => 
 
 // ➕ Crear una nueva cuenta bancaria
 export const createBankAccount = async (data: {
+    accountDescription: string;
     accountNumber: string;
     balance: number;
     accountType: "SAVINGS" | "CHECKING";
@@ -44,6 +45,7 @@ export const createBankAccount = async (data: {
 
 // ✏️ Actualizar una cuenta bancaria
 export const updateBankAccount = async (id: number, data: {
+    accountDescription: string;
     accountNumber: string;
     balance: number;
     accountType: "SAVINGS" | "CHECKING";
