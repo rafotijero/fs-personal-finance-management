@@ -14,9 +14,9 @@ export default defineConfig({
   preview: {
     host: "0.0.0.0",
     port: 4173, // 🔥 Define un puerto explícito para preview en Render
-    allowedHosts: [
+    /*allowedHosts: [
       "fs-personal-finance-management.onrender.com", // 🔥 Permite el frontend en Render
       "bs-personal-finance-management.onrender.com"  // 🔥 También el backend en Render
-    ],
+    ],*/
   },
 });
