@@ -104,6 +104,13 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
 
     return (
         <GenericModal title="Editar Cuenta Bancaria" isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} submitLabel="Guardar Cambios">
+            {/* Descripción de la Cuenta */}
+            <div className="mb-4">
+                <label className="block text-gray-700">Descripción de la Cuenta</label>
+                <input type="text" name="accountDescription" value={formData.accountDescription} onChange={handleChange} className="w-full border rounded px-3 py-2" required />
+            </div>
+
+
             {/* Número de Cuenta */}
             <div className="mb-4">
                 <label className="block text-gray-700">Número de Cuenta</label>

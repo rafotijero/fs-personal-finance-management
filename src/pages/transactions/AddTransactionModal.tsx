@@ -21,7 +21,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isOpen, onClo
         receiptFilePath: "", // ✅ Guarda la URL del archivo subido
     });
 
-    const [bankAccounts, setBankAccounts] = useState<{ id: number; accountNumber: string }[]>([]);
+    const [bankAccounts, setBankAccounts] = useState<{ id: number; accountDescription: string }[]>([]);
 
     useEffect(() => {
         if (isOpen) {
@@ -96,7 +96,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isOpen, onClo
                     <option value="">Seleccione una cuenta</option>
                     {bankAccounts.map((account) => (
                         <option key={account.id} value={account.id}>
-                            {account.accountNumber}
+                            {account.accountDescription}
                         </option>
                     ))}
                 </select>

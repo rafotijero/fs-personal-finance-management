@@ -28,8 +28,6 @@ const Login = () => {
         }
     };
 
-
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded shadow-md w-96">
@@ -65,6 +63,14 @@ const Login = () => {
                         Iniciar sesión
                     </button>
                 </form>
+
+                {/* 🔹 Enlace a la página de registro */}
+                <p className="text-center text-gray-600 mt-4">
+                    ¿No tienes cuenta?{" "}
+                    <a href="/register" className="text-blue-600 hover:underline">
+                        Regístrate aquí
+                    </a>
+                </p>
             </div>
         </div>
     );

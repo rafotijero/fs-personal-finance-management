@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Overview from "./pages/Overview";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Banks from "./pages/banks/Banks.tsx";
 import { useAuth } from "./context/AuthContext";
 import {ToastContainer} from "react-toastify";
@@ -26,6 +27,7 @@ function App() {
 
             <Routes>
                 <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route
                     path="/dashboard"
                     element={

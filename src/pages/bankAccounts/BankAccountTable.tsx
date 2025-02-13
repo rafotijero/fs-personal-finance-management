@@ -42,7 +42,9 @@ const BankAccountsTable: React.FC<BankAccountsTableProps> = ({ bankAccounts, onE
                         <td className="border px-4 py-2">
                             {account.accountType === "SAVINGS" ? "Ahorro" : "Corriente"}
                         </td>
-                        <td className="border px-4 py-2">{account.bank.name}</td>
+                        <td className="border px-4 py-2">
+                            {account.bank.name}
+                        </td>
                         <td className="border px-4 py-2">{account.owner.name}</td>
                         <td className="border px-4 py-2">
                             <BankAccountActions

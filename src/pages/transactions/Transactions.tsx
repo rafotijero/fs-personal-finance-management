@@ -5,6 +5,7 @@ import EditTransactionModal from "./EditTransactionModal";
 import AddTransactionModal from "./AddTransactionModal";
 import { toast } from "react-toastify";
 import { TransactionDTO } from "../../types";
+import { jwtDecode } from "jwt-decode";
 
 const Transactions: React.FC = () => {
     const [transactions, setTransactions] = useState<TransactionDTO[]>([]);
@@ -15,7 +16,24 @@ const Transactions: React.FC = () => {
     // 🔄 **Cargar lista de transacciones**
     const loadTransactions = async () => {
         try {
-            const data = await getTransactionsByUser(1); // TODO: Obtener el ID real del usuario autenticado
+            // 🔑 Obtener el token del almacenamiento (localStorage o sessionStorage)
+            const token = localStorage.getItem("token"); // Asegúrate de haber guardado el token aquí
+            if (!token) {
+                console.warn("⚠️ No hay token disponible.");
+                return;
+            }
+
+            // 🔍 Decodificar el token para extraer el userId
+            const decodedToken: any = jwtDecode(token);
+            const userId = decodedToken?.id || decodedToken?.userId; // Depende de cómo se llama el campo en el backend
+
+            if (!userId) {
+                console.error("❌ No se pudo obtener el ID del usuario del token.");
+                return;
+            }
+
+            // 🔄 Obtener transacciones del usuario autenticado
+            const data = await getTransactionsByUser(userId);
             setTransactions(data);
         } catch (error) {
             console.error("❌ Error al cargar transacciones:", error);
