@@ -12,9 +12,6 @@ export default defineConfig({
     cors: true, // ✅ Habilita CORS en el entorno local
   },
   preview: {
-    allowedHosts: [
-      "fs-personal-finance-management.onrender.com", // ✅ Permite acceso desde el frontend en Render
-      "bs-personal-finance-management.onrender.com"  // ✅ También el backend
-    ],
+    allowedHosts: ["*"], // ✅ Permite cualquier dominio
   },
 });
