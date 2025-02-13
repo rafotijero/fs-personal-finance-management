@@ -9,9 +9,11 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: port, // Usa el puerto dinámico de Render o 5173 en local
-    cors: true, // ✅ Habilita CORS en el entorno local
+    cors: true, // ✅ Habilita CORS en local
   },
   preview: {
-    allowedHosts: ["*"], // ✅ Permite cualquier dominio
+    port: 4173, // 🔥 Define un puerto explícito para preview en Render
+    host: "0.0.0.0",
+    allowedHosts: ["fs-personal-finance-management.onrender.com"], // 🔥 Asegura que Render lo reconozca
   },
 });
