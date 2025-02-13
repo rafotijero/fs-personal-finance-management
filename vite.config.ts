@@ -10,4 +10,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: port, // Usa el puerto dinámico de Render o 5173 en local
   },
+  preview: {
+    allowedHosts: ["fs-personal-finance-management.onrender.com"], // Permite Render
+  },
 });
