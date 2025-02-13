@@ -14,6 +14,12 @@ export const fetchBankAccounts = async (): Promise<BankAccount[]> => {
     }
 };
 
+// Obtener transacciones del usuario autenticado
+export const fetchBankAccountsByOwner = async (userId: number) => {
+    const response = await axios.get(`${BASE_URL}/owner/${userId}`);
+    return response.data.data || [];
+};
+
 // 🔎 Obtener una cuenta bancaria por ID
 export const fetchBankAccountById = async (id: number): Promise<BankAccount> => {
     try {

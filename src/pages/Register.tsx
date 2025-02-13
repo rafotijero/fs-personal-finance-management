@@ -7,7 +7,6 @@ const Register = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("USER"); // Valor por defecto
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
@@ -22,7 +21,6 @@ const Register = () => {
                 name,
                 email,
                 password,
-                role,
             });
 
             console.log("📌 Respuesta del backend:", response.data);
@@ -80,17 +78,6 @@ const Register = () => {
                             placeholder="Ingresa tu contraseña"
                             required
                         />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Rol</label>
-                        <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="w-full border rounded px-3 py-2"
-                        >
-                            <option value="USER">Usuario</option>
-                            <option value="ADMIN">Administrador</option>
-                        </select>
                     </div>
                     <button
                         type="submit"

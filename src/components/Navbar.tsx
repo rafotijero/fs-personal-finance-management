@@ -7,6 +7,8 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
     const [isMenuOpen, setMenuOpen] = useState(false);
 
+    console.log("🔍 USER ROLE:", user?.role); // 👀 Verifica qué rol tiene el usuario
+
     const handleLogout = () => {
         logout();
         navigate("/");
@@ -33,20 +35,31 @@ const Navbar: React.FC = () => {
                     <Link to="/dashboard" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
                         Resumen
                     </Link>
-                    <Link to="/banks" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
-                        Bancos
-                    </Link>
-                    <Link to="/accounts" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
-                        Cuentas Bancarias
-                    </Link>
-                    <Link to="/transactions" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
-                        Transacciones
-                    </Link>
+
+                    {/* 📌 Opciones para ADMIN */}
                     {user?.role === "ADMIN" && (
-                        <Link to="/admin" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
-                            Administración
-                        </Link>
+                        <>
+                            <Link to="/banks" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
+                                Bancos
+                            </Link>
+                            <Link to="/admin" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
+                                Administración
+                            </Link>
+                        </>
                     )}
+
+                    {/* 📌 Opciones para USER */}
+                    {user?.role === "USER" && (
+                        <>
+                            <Link to="/accounts" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
+                                Cuentas Bancarias
+                            </Link>
+                            <Link to="/transactions" className="block md:inline-block px-4 py-2 hover:bg-blue-700 rounded">
+                                Transacciones
+                            </Link>
+                        </>
+                    )}
+
                     <button onClick={handleLogout} className="block md:inline-block px-4 py-2 hover:bg-red-700 rounded">
                         Cerrar sesión
                     </button>

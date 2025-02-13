@@ -76,7 +76,7 @@ const Transactions: React.FC = () => {
             {/* ➕ Botón para agregar transacción */}
             <button
                 onClick={handleAdd}
-                className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
             >
                 Agregar Transacción
             </button>

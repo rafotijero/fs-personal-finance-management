@@ -23,17 +23,19 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions, onE
             <div className="overflow-x-auto">
                 <table className="table-auto w-full border-collapse border shadow-lg">
                     <thead>
-                    <tr className="bg-gray-200 text-left">
+                    <tr className="bg-gray-200 text-center">
+                        <th className="border px-4 py-2">Descripción</th>
                         <th className="border px-4 py-2">Tipo</th>
                         <th className="border px-4 py-2">Monto</th>
                         <th className="border px-4 py-2">Fecha</th>
-                        <th className="border px-4 py-2">Descripción</th>
+                        <th className="border px-4 py-2">Comprobante</th>
                         <th className="border px-4 py-2">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
                     {transactions.map((transaction) => (
                         <tr key={transaction.id} className="text-center hover:bg-gray-100">
+                            <td className="border px-4 py-2">{transaction.description || "-"}</td>
                             <td className="border px-4 py-2">
                                 {transaction.transactionType === "INCOME" ? (
                                     <span className="text-green-600 font-semibold">Ingreso</span>
@@ -45,7 +47,16 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions, onE
                                 ${transaction.amount.toFixed(2)}
                             </td>
                             <td className="border px-4 py-2">{new Date(transaction.transactionDate).toLocaleDateString()}</td>
-                            <td className="border px-4 py-2">{transaction.description || "-"}</td>
+                            <td className="border px-4 py-2">
+                                {transaction.receiptFilePath ? (
+                                    <a href={`${import.meta.env.VITE_API_URL}${transaction.receiptFilePath}`}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       className="text-blue-600 hover:underline">
+                                        📄 Ver
+                                    </a>
+                                ) : "-"}
+                            </td>
                             <td className="border px-4 py-2 flex justify-center space-x-2">
                                 <TransactionActions
                                     onEdit={() => onEdit(transaction)}

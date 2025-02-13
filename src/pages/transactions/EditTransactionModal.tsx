@@ -5,6 +5,7 @@ import GenericModal from "../common/GenericModal";
 import axios from "../../api/axiosConfig";
 import { TransactionDTO } from "../../types";
 import FileUpload from "../../components/FileUpload"; // ✅ Importamos el componente de subida de archivos
+import { jwtDecode } from "jwt-decode";
 
 interface EditTransactionModalProps {
     isOpen: boolean;
@@ -23,7 +24,30 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
         receiptFilePath: "", // ✅ Guardar la URL del archivo adjunto
     });
 
-    const [bankAccounts, setBankAccounts] = useState<{ id: number; accountNumber: string }[]>([]);
+    const [bankAccounts, setBankAccounts] = useState<{ id: number; accountDescription: string }[]>([]);
+
+    // 🔑 Obtener userId y userName desde el token
+    const token = localStorage.getItem("token");
+
+    let owner: { id: number; name: string } | null = null;
+
+    if (token) {
+        try {
+            const decodedToken: any = jwtDecode(token);
+
+            if (!decodedToken?.id && !decodedToken?.userId) {
+                throw new Error("❌ No se encontró un ID de usuario en el token.");
+            }
+
+            owner = {
+                id: decodedToken.id ?? decodedToken.userId,
+                name: decodedToken.name ?? "Usuario",
+            };
+        } catch (error) {
+            console.error("❌ Error al decodificar el token:", error);
+            owner = null; // Si hay un error, asigna null
+        }
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -45,8 +69,13 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
     }, [transaction]);
 
     const fetchBankAccounts = async () => {
+        if (!owner) {
+            console.error("⚠️ No hay usuario autenticado, no se pueden obtener cuentas bancarias.");
+            return;
+        }
+
         try {
-            const response = await axios.get("/bank-accounts");
+            const response = await axios.get(`/bank-accounts/owner/${owner.id}`);
             setBankAccounts(response.data.data || []);
         } catch (error) {
             console.error("❌ Error al cargar cuentas bancarias:", error);
@@ -105,11 +134,24 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
                 >
                     {bankAccounts.map((account) => (
                         <option key={account.id} value={account.id}>
-                            {account.accountNumber}
+                            {account.accountDescription}
                         </option>
                     ))}
                 </select>
             </div>
+
+            {/* Descripción de la Cuenta */}
+            <div className="mb-4">
+                <label className="block text-gray-700">Descripción de la Cuenta</label>
+                <input
+                    type="text"
+                    name="accountDescription"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full border rounded px-3 py-2"
+                    required />
+            </div>
+
 
             <div className="mb-4">
                 <label className="block text-gray-700">Tipo de Transacción</label>

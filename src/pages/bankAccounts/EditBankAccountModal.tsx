@@ -5,32 +5,30 @@ import GenericModal from "../common/GenericModal";
 import { BankAccount } from "../../types";
 import axios from "../../api/axiosConfig";
 
-
 interface EditBankAccountModalProps {
     isOpen: boolean;
     onClose: () => void;
     bankAccount: BankAccount | null;
     onUpdate: () => void; // 🔄 Para actualizar la lista después de editar
+    owner: { id: number; name: string } | null; // ✅ Se recibe el owner desde BankAccounts
 }
 
-const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onClose, bankAccount, onUpdate }) => {
+const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onClose, bankAccount, onUpdate, owner }) => {
     const [formData, setFormData] = useState({
         accountDescription: "",
         accountNumber: "",
         balance: "",
         accountType: "SAVINGS",
         bankId: "",
-        ownerId: "",
+        ownerId: owner?.id ?? 0, // ✅ Se asigna el ID correctamente
     });
 
     const [banks, setBanks] = useState<{ id: number; name: string }[]>([]);
-    const [users, setUsers] = useState<{ id: number; name: string }[]>([]);
 
-    // 🔄 **Cargar bancos y usuarios al abrir**
+    // 🔄 **Cargar bancos al abrir**
     useEffect(() => {
         if (isOpen) {
             fetchBanks();
-            fetchUsers();
         }
     }, [isOpen]);
 
@@ -43,16 +41,6 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
         }
     };
 
-    const fetchUsers = async () => {
-        try {
-            const response = await axios.get("/users");
-            setUsers(response.data.data || []);
-        } catch (error) {
-            console.error("❌ Error al cargar usuarios:", error);
-        }
-    };
-
-
     // 🔄 **Actualizar formulario cuando se seleccione una cuenta**
     useEffect(() => {
         if (bankAccount) {
@@ -62,10 +50,10 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
                 balance: bankAccount.balance.toString(),
                 accountType: bankAccount.accountType,
                 bankId: bankAccount.bank.id.toString(),
-                ownerId: bankAccount.owner.id.toString(),
+                ownerId: owner?.id ?? 0, // ✅ Se asigna el owner desde BankAccounts
             });
         }
-    }, [bankAccount]);
+    }, [bankAccount, owner]);
 
     // 📌 **Actualizar valores del formulario**
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -89,7 +77,7 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
                     balance: parseFloat(formData.balance),
                     accountType: formData.accountType as "SAVINGS" | "CHECKING",
                     bankId: parseInt(formData.bankId),
-                    ownerId: parseInt(formData.ownerId),
+                    ownerId: formData.ownerId, // ✅ Se envía como número
                 });
 
                 toast.success("✅ Cuenta bancaria actualizada correctamente.");
@@ -104,12 +92,24 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
 
     return (
         <GenericModal title="Editar Cuenta Bancaria" isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} submitLabel="Guardar Cambios">
+            {/* Banco */}
+            <div className="mb-4">
+                <label className="block text-gray-700">Banco</label>
+                <select name="bankId" value={formData.bankId} onChange={handleChange} className="w-full border rounded px-3 py-2" required>
+                    <option value="">Seleccione un banco</option>
+                    {banks.map((bank) => (
+                        <option key={bank.id} value={bank.id}>
+                            {bank.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             {/* Descripción de la Cuenta */}
             <div className="mb-4">
                 <label className="block text-gray-700">Descripción de la Cuenta</label>
                 <input type="text" name="accountDescription" value={formData.accountDescription} onChange={handleChange} className="w-full border rounded px-3 py-2" required />
             </div>
-
 
             {/* Número de Cuenta */}
             <div className="mb-4">
@@ -132,30 +132,10 @@ const EditBankAccountModal: React.FC<EditBankAccountModalProps> = ({ isOpen, onC
                 </select>
             </div>
 
-            {/* Banco */}
-            <div className="mb-4">
-                <label className="block text-gray-700">Banco</label>
-                <select name="bankId" value={formData.bankId} onChange={handleChange} className="w-full border rounded px-3 py-2" required>
-                    <option value="">Seleccione un banco</option>
-                    {banks.map((bank) => (
-                        <option key={bank.id} value={bank.id}>
-                            {bank.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {/* Propietario */}
-            <div className="mb-4">
-                <label className="block text-gray-700">Propietario</label>
-                <select name="ownerId" value={formData.ownerId} onChange={handleChange} className="w-full border rounded px-3 py-2" required>
-                    <option value="">Seleccione un usuario</option>
-                    {users.map((user) => (
-                        <option key={user.id} value={user.id}>
-                            {user.name}
-                        </option>
-                    ))}
-                </select>
+            {/* ID del Propietario (Solo lectura) */}
+            <div className="hidden">
+                <label className="block text-gray-700">ID del Propietario</label>
+                <input type="number" name="ownerId" value={formData.ownerId} readOnly className="w-full border rounded px-3 py-2 bg-gray-200" />
             </div>
         </GenericModal>
     );

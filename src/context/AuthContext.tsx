@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Definir la estructura del usuario autenticado
 interface AuthContextType {
     user: { email: string; role: "ADMIN" | "USER" } | null;
     token: string | null;
@@ -9,10 +8,8 @@ interface AuthContextType {
     logout: () => void;
 }
 
-// Crear el contexto con valores iniciales
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Hook para acceder al contexto
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
@@ -21,20 +18,12 @@ export const useAuth = () => {
     return context;
 };
 
-// **PROVEEDOR DEL CONTEXTO**
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-                                                                          children,
-                                                                      }) => {
-    const [token, setToken] = useState<string | null>(
-        localStorage.getItem("token")
-    );
-    const [user, setUser] = useState<{ email: string; role: "ADMIN" | "USER" } | null>(
-        null
-    );
-
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+    const [user, setUser] = useState<{ email: string; role: "ADMIN" | "USER" } | null>(null);
     const navigate = useNavigate();
 
-    // **FUNCIÓN PARA INICIAR SESIÓN**
+    // 🔹 **FUNCIÓN PARA INICIAR SESIÓN**
     const login = (newToken: string) => {
         if (!newToken) {
             throw new Error("Token inválido recibido");
@@ -44,18 +33,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setToken(newToken);
 
         try {
-            // Decodificar el token
             const payload = JSON.parse(atob(newToken.split(".")[1]));
-            setUser({ email: payload.sub, role: payload.roles[0] }); // roles[0] asume que solo hay un rol
-            navigate("/dashboard");
+
+            console.log("🔍 Payload decodificado:", payload);
+
+            if (!payload || !payload.roles || payload.roles.length === 0) {
+                throw new Error("🚨 El token no contiene información de roles.");
+            }
+
+            const normalizedRole = payload.roles[0].replace("ROLE_", "");
+            setUser({ email: payload.sub, role: normalizedRole as "ADMIN" | "USER" });
         } catch (error) {
-            throw new Error("Error al decodificar el token");
+            console.error("❌ Error al decodificar el token:", error);
+            localStorage.removeItem("token");
+            setToken(null);
         }
     };
 
+    // 🔹 **REDIRECCIÓN DESPUÉS DE AUTENTICACIÓN**
+    useEffect(() => {
+        if (user) {
+            console.log("📌 Redirigiendo a /dashboard...");
+            navigate("/dashboard");
+        }
+    }, [user]);
 
-
-    // **FUNCIÓN PARA CERRAR SESIÓN**
+    // 🔹 **FUNCIÓN PARA CERRAR SESIÓN**
     const logout = () => {
         localStorage.removeItem("token");
         setToken(null);
@@ -63,11 +66,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         navigate("/");
     };
 
-    // **CARGAR DATOS DEL USUARIO AL RECARGAR LA PÁGINA**
+    // 🔹 **CARGAR DATOS DEL USUARIO AL RECARGAR LA PÁGINA**
     useEffect(() => {
         if (token) {
             try {
-                // 🚨 Validación: Solo intenta decodificar si el token es un JWT válido
                 if (token.split(".").length !== 3) {
                     console.warn("Token inválido en localStorage, eliminando...");
                     localStorage.removeItem("token");
@@ -76,10 +78,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 }
 
                 const payload = JSON.parse(atob(token.split(".")[1]));
-                setUser({ email: payload.email, role: payload.role });
+                const normalizedRole = payload.roles[0].replace("ROLE_", "");
+
+                setUser({ email: payload.email, role: normalizedRole as "ADMIN" | "USER" });
             } catch (error) {
                 console.error("Error al decodificar el token:", error);
-                localStorage.removeItem("token"); // Limpiar si el token es corrupto
+                localStorage.removeItem("token");
                 setToken(null);
             }
         }

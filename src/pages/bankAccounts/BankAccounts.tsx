@@ -1,13 +1,11 @@
-console.log("🟢 BankAccounts.tsx se está ejecutando");
 import React, { useEffect, useState } from "react";
-import {
-    fetchBankAccounts
-} from "../../api/bankAccountApi";
+import { fetchBankAccountsByOwner } from "../../api/bankAccountApi";
 import BankAccountsTable from "./BankAccountTable";
 import EditBankAccountModal from "./EditBankAccountModal";
 import AddBankAccountModal from "./AddBankAccountModal";
 import { toast } from "react-toastify";
 import { BankAccount } from "../../types";
+import { jwtDecode } from "jwt-decode";
 
 const BankAccounts: React.FC = () => {
     const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
@@ -15,10 +13,27 @@ const BankAccounts: React.FC = () => {
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [selectedBankAccount, setSelectedBankAccount] = useState<BankAccount | null>(null);
 
+    // 🔑 Obtener userId y userName desde el token
+    const token = localStorage.getItem("token");
+    let owner: { id: number; name: string } | null = null;
+
+    if (token) {
+        const decodedToken: any = jwtDecode(token);
+        owner = {
+            id: decodedToken?.id || decodedToken?.userId,
+            name: decodedToken?.name || "Usuario",
+        };
+    }
+
+    if (!owner) {
+        console.error("❌ No se pudo obtener la información del usuario.");
+    }
+
     // 🔄 **Cargar lista de cuentas bancarias**
     const loadBankAccounts = async () => {
         try {
-            const accounts = await fetchBankAccounts();
+            if (!owner) return;
+            const accounts = await fetchBankAccountsByOwner(owner.id);
             setBankAccounts(accounts);
         } catch (error) {
             console.error("❌ Error al cargar las cuentas bancarias:", error);
@@ -44,8 +59,6 @@ const BankAccounts: React.FC = () => {
     // 🗑️ **Eliminar cuenta bancaria**
     const handleDelete = async (id: number) => {
         console.log("🔍 Ejecutando handleDelete para ID:", id);
-
-        // 🚨 No vuelvas a llamar deleteBankAccount aquí, ya se ejecutó en BankAccountActions.tsx
         setBankAccounts((prevAccounts) => prevAccounts.filter((account) => account.id !== id));
     };
 
@@ -70,8 +83,16 @@ const BankAccounts: React.FC = () => {
                 onClose={() => setEditModalOpen(false)}
                 bankAccount={selectedBankAccount}
                 onUpdate={loadBankAccounts}
+                owner={owner}
             />
-            <AddBankAccountModal isOpen={isAddModalOpen} onClose={() => setAddModalOpen(false)} onAdd={loadBankAccounts} />
+
+            {/* 🔹 Pasar owner como prop a AddBankAccountModal */}
+            <AddBankAccountModal
+                isOpen={isAddModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                onAdd={loadBankAccounts}
+                owner={owner} // ✅ Aquí pasamos el owner en el formato correcto
+            />
         </div>
     );
 };
