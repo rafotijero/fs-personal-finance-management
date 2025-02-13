@@ -15,14 +15,14 @@ const UploadPage: React.FC = () => {
             <FileUpload
                 uploadUrl="/api/v1/uploads/images"
                 onUploadSuccess={handleUploadSuccess}
-                fileType="image"
+                fileMode="image"
             />
 
             {/* Subir PDFs */}
             <FileUpload
                 uploadUrl="/api/v1/uploads/pdfs"
                 onUploadSuccess={handleUploadSuccess}
-                fileType="pdf"
+                fileMode="pdf"
             />
         </div>
     );
