@@ -142,7 +142,7 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({ isOpen, onC
 
             {/* Descripción de la Cuenta */}
             <div className="mb-4">
-                <label className="block text-gray-700">Descripción de la Cuenta</label>
+                <label className="block text-gray-700">Descripción de la Transacción</label>
                 <input
                     type="text"
                     name="accountDescription"

@@ -68,7 +68,18 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const COLORS = ["#22c55e", "#ef4444"];
+    const COLORS = [
+        "#22c55e", // Verde
+        "#ef4444", // Rojo
+        "#3b82f6", // Azul
+        "#f59e0b", // Naranja
+        "#a855f7", // Púrpura
+        "#14b8a6", // Turquesa
+        "#eab308", // Amarillo
+        "#ec4899", // Rosa
+        "#6366f1", // Azul índigo
+        "#7c3aed"  // Violeta oscuro
+    ];
 
     return (
         <div className="p-6">
@@ -101,7 +112,7 @@ const Dashboard: React.FC = () => {
                         <PieChart>
                             <Pie
                                 data={bankAccounts.map(acc => ({
-                                    name: acc.bank.name, // ✅ Ahora usa el nombre del banco
+                                    name: acc.accountDescription, // ✅ Ahora usa el nombre del banco
                                     balance: acc.balance
                                 }))}
                                 dataKey="balance"
